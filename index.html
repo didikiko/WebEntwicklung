@@ -1,9 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Meine Website</title>
+  <title>HowTo Learning</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
-    <h1>Website läuft 🚀</h1>
+
+<h1>HowTo Learning Plattform 🚀</h1>
+
+<h2>Registrieren</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Passwort">
+<button onclick="register()">Register</button>
+
+<h2>Login</h2>
+<button onclick="login()">Login</button>
+
+<h2>Dashboard</h2>
+<p id="status">Nicht eingeloggt</p>
+<button onclick="logout()">Logout</button>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://nwmzbybbqalmthjuslei.supabase.co",
+  "sb_publishable_-urDYSO9j5wjlh-9vyC7Sw_xNqsOeO4"
+);
+
+async function register() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signUp({ email, password });
+  alert(error ? error.message : "Registriert!");
+}
+
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  alert(error ? error.message : "Eingeloggt!");
+  checkUser();
+}
+
+async function logout() {
+  await supabase.auth.signOut();
+  checkUser();
+}
+
+async function checkUser() {
+  const { data } = await supabase.auth.getUser();
+  document.getElementById("status").innerText =
+    data.user ? "Eingeloggt als " + data.user.email : "Nicht eingeloggt";
+}
+
+checkUser();
+</script>
+
 </body>
 </html>
